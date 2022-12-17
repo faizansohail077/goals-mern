@@ -29,7 +29,7 @@ const registerUser = asyncHandle(async (req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
-            token:generateToken(user._id)
+            token: generateToken(user._id)
         })
     }
     else {
@@ -41,37 +41,37 @@ const registerUser = asyncHandle(async (req, res) => {
 
 const loginUser = asyncHandle(async (req, res) => {
     const { email, password } = req.body
-    console.log(email, password, 'email, password ')
 
     if (!password || !email) {
         res.status(400)
         throw new Error("Invalid Fiedls")
     }
     else {
-    const user = await UserModel.findOne({ email })
-    if (user && (await bcrypt.compare(password, user.password))) {
-        res.json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            token:generateToken(user._id)
+        const user = await UserModel.findOne({ email })
+        if (user && (await bcrypt.compare(password, user.password))) {
+            res.json({
+                _id: user.id,
+                name: user.name,
+                email: user.email,
+                token: generateToken(user._id)
 
-        })
-    } else {
-        res.status(400)
-        throw new Error('Invalid Credentials')
-    }
+            })
+        } else {
+            res.status(400)
+            throw new Error('Invalid Credentials')
+        }
     }
 
 })
 
-const userData = asyncHandle((req, res) => {
-    res.status(200).json({ message: 'user created' })
+const userData = asyncHandle(async (req, res) => {
+    const { _id, name, email, token } = await UserModel.findById(req.user.id)
+    res.status(200).json({ id: _id, name, email, token })
 })
 
-const generateToken= (id)=>{
-    return jwt.sign({id},process.env.JWT_SECRET,{
-        expiresIn:'30d'
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
     })
 
 }
