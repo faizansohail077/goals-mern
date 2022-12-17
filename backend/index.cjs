@@ -13,5 +13,8 @@ app.use(express.urlencoded({ extended: false }))
 
 
 app.use('/api/goals', require('./routes/goalRoutes.cjs'))
+app.use('/api/users',require('./routes/userRoutes.cjs'))
+
+
 app.use(errorHandler)
 app.listen(Port)
